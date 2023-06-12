@@ -1,4 +1,4 @@
-# Tiny-Search-Engine
+# Tiny Search Engine
 Tiny Search Engine made with a crawler, indexer, and querier from my CS50 class
 
 Assumptions
