@@ -1,0 +1,190 @@
+bash -v testing.sh
+module () {  _module_raw "$@" 2>&1
+}
+ml () {  module ml "$@"
+}
+_module_raw () {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+
+make
+make[1]: Entering directory '/thayerfs/home/f005g9v/cs50-dev/tse-JusungPark6/querier'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/thayerfs/home/f005g9v/cs50-dev/tse-JusungPark6/querier'
+
+# Base Test
+echo
+
+echo ===== Base Test =====
+===== Base Test =====
+echo
+
+./querier ../indexer/testDir/letters-10 testIndex.index < test1.txt
+Error: Index file cannot be read
+echo
+
+echo Expected query [ for and home ]:
+Expected query [ for and home ]:
+echo Score: 6 / docID: 6 
+Score: 6 / docID: 6
+echo Score: 4 / docID: 2 
+Score: 4 / docID: 2
+echo Score: 2 / docID: 1
+Score: 2 / docID: 1
+echo Score: 1 / docID: 3
+Score: 1 / docID: 3
+echo Score: 1 / docID: 4 
+Score: 1 / docID: 4
+echo Score: 1 / docID: 5
+Score: 1 / docID: 5
+echo Score: 1 / docID: 7 
+Score: 1 / docID: 7
+echo Score: 1 / docID: 8 
+Score: 1 / docID: 8
+echo Score: 1 / docID: 9 
+Score: 1 / docID: 9
+echo
+
+echo Expected [ first or playground or coding ]:
+Expected [ first or playground or coding ]:
+echo Score: 8 / docID: 8 
+Score: 8 / docID: 8
+echo Score: 5 / docID: 3 
+Score: 5 / docID: 3
+echo Score: 1 / docID: 6 
+Score: 1 / docID: 6
+echo Score: 1 / docID: 1
+Score: 1 / docID: 1
+echo 
+
+echo Expected [ first or playground and search ]:
+Expected [ first or playground and search ]:
+echo Score: 8 / docID: 8
+Score: 8 / docID: 8
+echo Score: 5 / docID: 3
+Score: 5 / docID: 3
+echo
+
+
+# Spaces in input tests
+echo ===== Spaces in input tests =====
+===== Spaces in input tests =====
+echo
+
+./querier ../indexer/testDir/letters-10 testIndex.index < test2.txt
+Error: Index file cannot be read
+echo
+
+echo Query 1: 
+Query 1:
+echo Spaces before input
+Spaces before input
+echo 
+
+echo Query 2: 
+Query 2:
+echo Spaces between inputs
+Spaces between inputs
+echo
+
+echo Query 3: 
+Query 3:
+echo Spaces after inputs
+Spaces after inputs
+echo
+
+echo Query 4: 
+Query 4:
+echo Spaces before, between and after inputs
+Spaces before, between and after inputs
+echo
+
+
+# Non-char/space in input tests
+echo ===== Non-char/space in input tests =====
+===== Non-char/space in input tests =====
+echo
+
+./querier ../indexer/testDir/letters-10 testIndex.index < test3.txt
+Error: Index file cannot be read
+echo 
+
+echo Should produce 3 errors
+Should produce 3 errors
+echo
+
+
+# Adjacent Operator tests
+echo ===== Adjacent Operator Tests =====
+===== Adjacent Operator Tests =====
+echo
+
+./querier ../indexer/testDir/letters-10 testIndex.index < test4.1.txt
+Error: Index file cannot be read
+echo and or test
+and or test
+./querier ../indexer/testDir/letters-10 testIndex.index < test4.2.txt
+Error: Index file cannot be read
+echo or or test
+or or test
+./querier ../indexer/testDir/letters-10 testIndex.index < test4.3.txt
+Error: Index file cannot be read
+echo and and test
+and and test
+./querier ../indexer/testDir/letters-10 testIndex.index < test4.4.txt
+Error: Index file cannot be read
+echo or and test
+or and test
+echo
+
+
+# Start/end Operator test
+echo ===== Start/End Operator Tests =====
+===== Start/End Operator Tests =====
+echo
+
+echo and before test
+and before test
+./querier ../indexer/testDir/letters-10 testIndex.index < test5.1.txt
+Error: Index file cannot be read
+echo or before test
+or before test
+./querier ../indexer/testDir/letters-10 testIndex.index < test5.2.txt
+Error: Index file cannot be read
+echo or after test
+or after test
+./querier ../indexer/testDir/letters-10 testIndex.index < test5.3.txt
+Error: Index file cannot be read
+echo and after test
+and after test
+./querier ../indexer/testDir/letters-10 testIndex.index < test5.4.txt
+Error: Index file cannot be read
+echo 
+
+
+# Invalid Args tests
+echo ===== Invalid Args Test =====
+===== Invalid Args Test =====
+echo
+
+echo invalid crawler dir test
+invalid crawler dir test
+./querier ../indexer/testDir/lers-0 testIndex.index
+Error: Index file cannot be read
+echo invalid index test
+invalid index test
+./querier ../indexer/testDir/letters-10 tesawefdex.index 
+Error: Index file cannot be read
+echo
+
+
+# No Matching Documents test
+echo ===== No matching Docs Test =====
+===== No matching Docs Test =====
+echo
+
+./querier ../indexer/testDir/letters-10 testIndex.index < test6.txt
+Error: Index file cannot be read
+make: *** [Makefile:31: test] Error 1

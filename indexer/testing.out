@@ -1,0 +1,389 @@
+gcc -Wall -pedantic -std=c11 -ggdb  -I../libcs50 -I../common   -c -o indexer.o indexer.c
+gcc -Wall -pedantic -std=c11 -ggdb  -I../libcs50 -I../common indexer.o ../common/index.o ../common/word.o ../libcs50/libcs50-given.a -lm -o indexer
+bash -v testing.sh
+module () {  _module_raw "$@" 2>&1
+}
+ml () {  module ml "$@"
+}
+_module_raw () {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+# Jusung Park
+# CS50 Winter 2023
+# testing file for indexer module
+
+make
+make[1]: Entering directory '/thayerfs/home/f005g9v/cs50-dev/tse-JusungPark6/indexer'
+gcc -Wall -pedantic -std=c11 -ggdb  -I../libcs50 -I../common   -c -o indextest.o indextest.c
+gcc -Wall -pedantic -std=c11 -ggdb  -I../libcs50 -I../common indextest.o ../common/index.o ../common/word.o ../libcs50/libcs50-given.a -lm -o indextest
+make[1]: Leaving directory '/thayerfs/home/f005g9v/cs50-dev/tse-JusungPark6/indexer'
+# Base Test
+./indexer ../indexer/testDir/letters-10 ../indexer/testDir/letters-10/test.index
+Directory does not exist
+
+echo "Unit test"
+Unit test
+# 1 Unit Test
+./indextest ../indexer/testDir/letters-10/test.index ../indexer/testDir/letters-10/testCopy.index
+testing.sh: line 11: 2948979 Segmentation fault      (core dumped) ./indextest ../indexer/testDir/letters-10/test.index ../indexer/testDir/letters-10/testCopy.index
+echo "Check ../indexer/testDir/letters-10/testCopy.index to confirm"
+Check ../indexer/testDir/letters-10/testCopy.index to confirm
+echo ""
+
+
+# 2. no arguments 
+echo "No arguments test"
+No arguments test
+./indexer
+Incorrect number of args
+if [ $? -ne 0 ]
+then
+    echo "2. no arguments test passed"
+fi
+2. no arguments test passed
+echo ""
+
+
+# 3. one argument 
+echo "One argument test"
+One argument test
+./indexer ../indexer/testDir/letters-10/test.index
+Incorrect number of args
+if [ $? -ne 0 ]
+then
+    echo "3. one argument test passed"
+fi
+3. one argument test passed
+echo ""
+
+
+# 4. three or more arguments 
+./indexer ../indexer/testDir/letters-10/ ../indexer/testDir/letters-10/test.index abolubnt
+Incorrect number of args
+if [ $? -ne 0 ]
+then
+    echo "4. three argument test passed"
+fi
+4. three argument test passed
+echo ""
+
+
+# 5. invalid pageDirectory (non-existent path) 
+./indexer ../indexer/testDir/letters-1a ../indexer/testDir/letters-10/test.index
+Directory does not exist
+if [ $? -ne 0 ]
+then
+    echo "5. invalid pageDirectory(non existant) passed"
+fi
+5. invalid pageDirectory(non existant) passed
+echo ""
+
+
+# 6. invalid pageDirectory (not a crawler directory) 
+./indexer ../indexer/testDir/notCrawler ../indexer/testDir/notCrawler/test.index
+Directory does not exist
+if [ $? -ne 0 ]
+then
+    echo "6. Invalid pageDirectory (non crawler) passed"
+fi
+6. Invalid pageDirectory (non crawler) passed
+echo ""
+
+
+# 7. invalid indexFile (non-existent path)
+./indexer ../indexer/testDir/letters-10 ../indexer/testDir/notaDir/test.index
+Directory does not exist
+if [ $? -ne 0 ]
+then
+    echo "7. invalid indexFIle path test passed"
+fi
+7. invalid indexFIle path test passed
+echo ""
+
+
+# 8. invalid indexFile (read-only directory) 
+./indexer ../indexer/testDir/letters-10 ../indexer/testDir/readOnly/test.index
+Directory does not exist
+if [ $? -ne 0 ]
+then
+    echo "8. invalid indexFile readOnlyDir test passed"
+fi
+8. invalid indexFile readOnlyDir test passed
+echo ""
+
+
+# 9. invalid indexFile (existing, read-only file)
+./indexer ../indexer/testDir/letters-10 ../indexer/testDir/readOnlyFile/readOnly.index
+Directory does not exist
+if [ $? -ne 0 ]
+then
+    echo "9. invalid indexFIle readOnlyFile test passed"
+fi
+9. invalid indexFIle readOnlyFile test passed
+echo ""
+
+
+# letters-10 test
+echo "Letters-10 test"
+Letters-10 test
+
+valgrind --leak-check=full --show-leak-kinds=all ./indexer ../indexer/testDir/letters-10 ../indexer/testDir/letters-10/test.index
+==2948989== Memcheck, a memory error detector
+==2948989== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2948989== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2948989== Command: ./indexer ../indexer/testDir/letters-10 ../indexer/testDir/letters-10/test.index
+==2948989== 
+Directory does not exist
+==2948989== 
+==2948989== HEAP SUMMARY:
+==2948989==     in use at exit: 0 bytes in 0 blocks
+==2948989==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==2948989== 
+==2948989== All heap blocks were freed -- no leaks are possible
+==2948989== 
+==2948989== For lists of detected and suppressed errors, rerun with: -s
+==2948989== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all ./indextest ../indexer/testDir/letters-10/test.index ../indexer/testDir/letters-10/testCopy.index
+==2949023== Memcheck, a memory error detector
+==2949023== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2949023== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2949023== Command: ./indextest ../indexer/testDir/letters-10/test.index ../indexer/testDir/letters-10/testCopy.index
+==2949023== 
+==2949023== Invalid read of size 1
+==2949023==    at 0x4913A4F: getc (getc.c:37)
+==2949023==    by 0x109F8D: file_readUntil (file.c:75)
+==2949023==    by 0x109EC6: file_readWord (file.c:53)
+==2949023==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023==  Address 0x74 is not stack'd, malloc'd or (recently) free'd
+==2949023== 
+==2949023== 
+==2949023== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+==2949023==  Access not within mapped region at address 0x74
+==2949023==    at 0x4913A4F: getc (getc.c:37)
+==2949023==    by 0x109F8D: file_readUntil (file.c:75)
+==2949023==    by 0x109EC6: file_readWord (file.c:53)
+==2949023==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023==  If you believe this happened as a result of a stack
+==2949023==  overflow in your program's main thread (unlikely but
+==2949023==  possible), you can try to increase the size of the
+==2949023==  main thread stack using the --main-stacksize= flag.
+==2949023==  The main thread stack size used in this run was 8388608.
+==2949023== 
+==2949023== HEAP SUMMARY:
+==2949023==     in use at exit: 3,405 bytes in 205 blocks
+==2949023==   total heap usage: 206 allocs, 1 frees, 3,877 bytes allocated
+==2949023== 
+==2949023== 8 bytes in 1 blocks are still reachable in loss record 1 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x10952C: index_new (index.c:36)
+==2949023==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== 16 bytes in 1 blocks are still reachable in loss record 2 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949023==    by 0x10A008: hashtable_new (hashtable.c:47)
+==2949023==    by 0x109541: index_new (index.c:38)
+==2949023==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== 81 bytes in 1 blocks are still reachable in loss record 3 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x109F02: file_readUntil (file.c:66)
+==2949023==    by 0x109EC6: file_readWord (file.c:53)
+==2949023==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== 100 bytes in 1 blocks are still reachable in loss record 4 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x109423: createnewIndex (indextest.c:35)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== 1,600 bytes in 1 blocks are still reachable in loss record 5 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949023==    by 0x10A037: hashtable_new (hashtable.c:54)
+==2949023==    by 0x109541: index_new (index.c:38)
+==2949023==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== 1,600 bytes in 200 blocks are still reachable in loss record 6 of 6
+==2949023==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949023==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949023==    by 0x10A713: set_new (set.c:44)
+==2949023==    by 0x10A073: hashtable_new (hashtable.c:62)
+==2949023==    by 0x109541: index_new (index.c:38)
+==2949023==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949023==    by 0x1093CF: main (indextest.c:21)
+==2949023== 
+==2949023== LEAK SUMMARY:
+==2949023==    definitely lost: 0 bytes in 0 blocks
+==2949023==    indirectly lost: 0 bytes in 0 blocks
+==2949023==      possibly lost: 0 bytes in 0 blocks
+==2949023==    still reachable: 3,405 bytes in 205 blocks
+==2949023==         suppressed: 0 bytes in 0 blocks
+==2949023== 
+==2949023== For lists of detected and suppressed errors, rerun with: -s
+==2949023== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+testing.sh: line 85: 2949023 Segmentation fault      (core dumped) valgrind --leak-check=full --show-leak-kinds=all ./indextest ../indexer/testDir/letters-10/test.index ../indexer/testDir/letters-10/testCopy.index
+echo ""
+
+echo ""
+
+echo ""
+
+echo ""
+
+
+# toscrape-0 test
+echo "toscrape-0 test"
+toscrape-0 test
+valgrind --leak-check=full --show-leak-kinds=all ./indexer ../indexer/testDir/toscrape-0 ../indexer/testDir/toscrape-0/test.index
+==2949064== Memcheck, a memory error detector
+==2949064== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2949064== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2949064== Command: ./indexer ../indexer/testDir/toscrape-0 ../indexer/testDir/toscrape-0/test.index
+==2949064== 
+Directory does not exist
+==2949064== 
+==2949064== HEAP SUMMARY:
+==2949064==     in use at exit: 0 bytes in 0 blocks
+==2949064==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==2949064== 
+==2949064== All heap blocks were freed -- no leaks are possible
+==2949064== 
+==2949064== For lists of detected and suppressed errors, rerun with: -s
+==2949064== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all ./indextest ../indexer/testDir/toscrape-0/test.index ../indexer/testDir/toscrape-0/testCopy.index
+==2949075== Memcheck, a memory error detector
+==2949075== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2949075== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2949075== Command: ./indextest ../indexer/testDir/toscrape-0/test.index ../indexer/testDir/toscrape-0/testCopy.index
+==2949075== 
+==2949075== Invalid read of size 1
+==2949075==    at 0x4913A4F: getc (getc.c:37)
+==2949075==    by 0x109F8D: file_readUntil (file.c:75)
+==2949075==    by 0x109EC6: file_readWord (file.c:53)
+==2949075==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075==  Address 0x74 is not stack'd, malloc'd or (recently) free'd
+==2949075== 
+==2949075== 
+==2949075== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+==2949075==  Access not within mapped region at address 0x74
+==2949075==    at 0x4913A4F: getc (getc.c:37)
+==2949075==    by 0x109F8D: file_readUntil (file.c:75)
+==2949075==    by 0x109EC6: file_readWord (file.c:53)
+==2949075==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075==  If you believe this happened as a result of a stack
+==2949075==  overflow in your program's main thread (unlikely but
+==2949075==  possible), you can try to increase the size of the
+==2949075==  main thread stack using the --main-stacksize= flag.
+==2949075==  The main thread stack size used in this run was 8388608.
+==2949075== 
+==2949075== HEAP SUMMARY:
+==2949075==     in use at exit: 3,405 bytes in 205 blocks
+==2949075==   total heap usage: 206 allocs, 1 frees, 3,877 bytes allocated
+==2949075== 
+==2949075== 8 bytes in 1 blocks are still reachable in loss record 1 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x10952C: index_new (index.c:36)
+==2949075==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== 16 bytes in 1 blocks are still reachable in loss record 2 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949075==    by 0x10A008: hashtable_new (hashtable.c:47)
+==2949075==    by 0x109541: index_new (index.c:38)
+==2949075==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== 81 bytes in 1 blocks are still reachable in loss record 3 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x109F02: file_readUntil (file.c:66)
+==2949075==    by 0x109EC6: file_readWord (file.c:53)
+==2949075==    by 0x1094CD: createnewIndex (indextest.c:39)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== 100 bytes in 1 blocks are still reachable in loss record 4 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x109423: createnewIndex (indextest.c:35)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== 1,600 bytes in 1 blocks are still reachable in loss record 5 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949075==    by 0x10A037: hashtable_new (hashtable.c:54)
+==2949075==    by 0x109541: index_new (index.c:38)
+==2949075==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== 1,600 bytes in 200 blocks are still reachable in loss record 6 of 6
+==2949075==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2949075==    by 0x10A56D: mem_malloc (mem.c:69)
+==2949075==    by 0x10A713: set_new (set.c:44)
+==2949075==    by 0x10A073: hashtable_new (hashtable.c:62)
+==2949075==    by 0x109541: index_new (index.c:38)
+==2949075==    by 0x10940E: createnewIndex (indextest.c:32)
+==2949075==    by 0x1093CF: main (indextest.c:21)
+==2949075== 
+==2949075== LEAK SUMMARY:
+==2949075==    definitely lost: 0 bytes in 0 blocks
+==2949075==    indirectly lost: 0 bytes in 0 blocks
+==2949075==      possibly lost: 0 bytes in 0 blocks
+==2949075==    still reachable: 3,405 bytes in 205 blocks
+==2949075==         suppressed: 0 bytes in 0 blocks
+==2949075== 
+==2949075== For lists of detected and suppressed errors, rerun with: -s
+==2949075== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+testing.sh: line 94: 2949075 Segmentation fault      (core dumped) valgrind --leak-check=full --show-leak-kinds=all ./indextest ../indexer/testDir/toscrape-0/test.index ../indexer/testDir/toscrape-0/testCopy.index
+echo ""
+
+echo ""
+
+echo ""
+
+echo ""
+
+
+# wikipedia-0 test
+echo "Wikipedia-0 test"
+Wikipedia-0 test
+valgrind --leak-check=full --show-leak-kinds=all ./indexer ../indexer/testDir/wikipedia-0 ../indexer/testDir/wikipedia-0/test.index
+==2949115== Memcheck, a memory error detector
+==2949115== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2949115== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2949115== Command: ./indexer ../indexer/testDir/wikipedia-0 ../indexer/testDir/wikipedia-0/test.index
+==2949115== 
+Directory does not exist
+==2949115== 
+==2949115== HEAP SUMMARY:
+==2949115==     in use at exit: 0 bytes in 0 blocks
+==2949115==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==2949115== 
+==2949115== All heap blocks were freed -- no leaks are possible
+==2949115== 
+==2949115== For lists of detected and suppressed errors, rerun with: -s
+==2949115== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+valgrind --leak-check=full --show-leak-kinds=all ./indexer ../indexer/testDir/wikipedia-0 ../indexer/testDir/wikipedia-0/test.index
+==2949119== Memcheck, a memory error detector
+==2949119== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2949119== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==2949119== Command: ./indexer ../indexer/testDir/wikipedia-0 ../indexer/testDir/wikipedia-0/test.index
+==2949119== 
+Directory does not exist
+==2949119== 
+==2949119== HEAP SUMMARY:
+==2949119==     in use at exit: 0 bytes in 0 blocks
+==2949119==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==2949119== 
+==2949119== All heap blocks were freed -- no leaks are possible
+==2949119== 
+==2949119== For lists of detected and suppressed errors, rerun with: -s
+==2949119== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+make: *** [Makefile:35: test] Error 1
